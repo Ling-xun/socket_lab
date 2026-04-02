@@ -5,6 +5,8 @@
 #include <sys/socket.h>
 #include <string>
 #include <thread>
+#include<mutex>
+std::mutex cout_mutex;
 void send_messages(int sock){
     while(true){
         std::string msg;
@@ -25,7 +27,10 @@ void recv_messages(int sock){
         int n=recv(sock, buffer, 1024, 0);
         if(n<=0)break;
         buffer[n] = '\0';
-        std::cout << "\nserver: " << buffer << std::endl;
+{
+    std::lock_guard<std::mutex> lock(cout_mutex);
+    std::cout << "\nserver: " << buffer << std::endl;
+}
     }
 }
 int main() {

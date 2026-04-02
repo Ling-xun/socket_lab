@@ -8,7 +8,7 @@
 #include <algorithm>
 std::vector<int> clients;
 std::mutex clients_mutex;
-void broadcast_msg(int sender_fd, const char* msg){
+void broadcast_msg(int sender_fd, const std::string& msg){
     std::vector<int> snapshot;
 
     {
@@ -18,7 +18,7 @@ void broadcast_msg(int sender_fd, const char* msg){
 
     for(int fd : snapshot){
         if(fd != sender_fd){
-            send(fd, msg, strlen(msg), 0);
+            send(fd, msg.c_str(), msg.size(), 0);
         }
     }
 }
@@ -49,9 +49,10 @@ void handle_client(int client_fd){
     return;
     }
     buffer[n] = '\0';
+    std::string formatted_msg="["+std::to_string(client_fd)+"]:"+buffer+"\n";
     std::cout<<"thread "<<std::this_thread::get_id()
-         <<" client: "<<buffer<<std::endl;
-    broadcast_msg(client_fd,buffer);
+         <<" "<<formatted_msg<<std::endl;
+    broadcast_msg(client_fd,formatted_msg);
     }
 }
 
