@@ -29,8 +29,8 @@ void recv_messages(int sock){
         buffer[n] = '\0';
 {
     std::lock_guard<std::mutex> lock(cout_mutex);
-    std::cout << "\n" << buffer << std::endl;
-}
+    std::cout << buffer << std::endl;
+}     
     }
 }
 int main() {
